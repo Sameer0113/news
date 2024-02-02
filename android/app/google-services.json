@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "1074232250635",
+    "project_id": "sam-fire-project",
+    "storage_bucket": "sam-fire-project.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1074232250635:android:67f120a48676e758b7120e",
+        "android_client_info": {
+          "package_name": "com.example.newsapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBTiKpwRmkVGhQCLlHBQm6YpCv7-D18SJs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1074232250635:android:b9ef954c1792711cb7120e",
+        "android_client_info": {
+          "package_name": "com.example.sam_firebase"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBTiKpwRmkVGhQCLlHBQm6YpCv7-D18SJs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
