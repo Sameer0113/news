@@ -2,9 +2,9 @@ import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_styled_toast/flutter_styled_toast.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_styled_toast/flutter_styled_toast.dart';
 
 class NewsPage extends StatefulWidget {
   const NewsPage({super.key});
@@ -57,17 +57,18 @@ class _NewsPageState extends State<NewsPage> {
           : Column(
               children: [
                 Container(
-                  margin: const EdgeInsets.only(left: 12,right: 12,top: 8,bottom: 6.0),
+                  margin: const EdgeInsets.only(
+                      left: 12, right: 12, top: 8, bottom: 6.0),
                   decoration: BoxDecoration(
                     border: Border.all(color: Colors.grey),
                     borderRadius: BorderRadius.circular(20),
                   ),
-
-                  padding: const EdgeInsets.only(left: 8.0,right: 8),
+                  padding: const EdgeInsets.only(left: 8.0, right: 8),
                   child: TextField(
                     controller: controller,
                     style: const TextStyle(),
-                    decoration:  const InputDecoration(hintText: 'search here..',
+                    decoration: const InputDecoration(
+                      hintText: 'search here..',
                       border: InputBorder.none,
                     ),
                     onChanged: _onTextChanged,
@@ -80,8 +81,14 @@ class _NewsPageState extends State<NewsPage> {
                         ? newsList.length
                         : searchedNewsList.length,
                     itemBuilder: (context, index) {
-                      final item = searchedNewsList.isNotEmpty ? searchedNewsList[index] : newsList[index];
-                      return NewsItem(title: item['title'] ?? '', subtitle:item['description'] ?? '' , imageUrl: item['urlToImage'] ?? 'https://github.githubassets.com/assets/GitHub-Mark-ea2971cee799.png');
+                      final item = searchedNewsList.isNotEmpty
+                          ? searchedNewsList[index]
+                          : newsList[index];
+                      return NewsItem(
+                          title: item['title'] ?? '',
+                          subtitle: item['description'] ?? '',
+                          imageUrl: item['urlToImage'] ??
+                              'https://github.githubassets.com/assets/GitHub-Mark-ea2971cee799.png');
                     },
                   ),
                 ),
@@ -97,9 +104,7 @@ class _NewsPageState extends State<NewsPage> {
           .toList();
       setState(() {});
     }
-
   }
-
 }
 
 Future addItemToFireStore(value) async {
@@ -107,13 +112,33 @@ Future addItemToFireStore(value) async {
 }
 
 
+Future<bool> checkDuplicates(String item) async {
+  final querySnapshot = await FirebaseFirestore.instance
+      .collection('items')
+      .where('title', isEqualTo: item)
+      .get();
+
+  return querySnapshot.docs.isNotEmpty;
+}
+
+// void saveListItemsInFirestore(List<String> items) async {
+//   final hasDuplicates = await checkDuplicates(items);
+//   if (!hasDuplicates) {
+//     FirebaseFirestore.instance.collection('items').doc().set({
+//       'items': items,
+//     });
+//   } else {
+//     print('Duplicates found. Not saving.');
+//   }
+// }
 
 class NewsItem extends StatelessWidget {
   final String title;
   final String subtitle;
   final String imageUrl;
 
-  NewsItem({required this.title, required this.subtitle, required this.imageUrl});
+  NewsItem(
+      {required this.title, required this.subtitle, required this.imageUrl});
 
   @override
   Widget build(BuildContext context) {
@@ -163,9 +188,18 @@ class NewsItem extends StatelessWidget {
               children: [
                 IconButton(
                   icon: Icon(Icons.save),
-                  onPressed: () {
-                   // Show
-                    addItemToFireStore(title);
+                  onPressed: () async{
+                    // Show
+                    bool isDuplicate = await checkDuplicates(title);
+                    if(!isDuplicate){
+                      showToast("Saved successfully",duration: const Duration(seconds: 2),context: context,position: StyledToastPosition.center);
+                      await addItemToFireStore(title);
+                    }
+                    else{
+                      showToast("Already Saved...",duration: const Duration(seconds: 2),context: context,position: StyledToastPosition.center);
+                    }
+
+
                     // Implement save functionality here
                     // You can add your logic to save the image
                   },
@@ -178,4 +212,3 @@ class NewsItem extends StatelessWidget {
     );
   }
 }
-
