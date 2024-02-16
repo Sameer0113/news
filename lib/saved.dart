@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_styled_toast/flutter_styled_toast.dart';
 
 class SavedItems extends StatefulWidget {
   @override
@@ -18,35 +19,30 @@ class _SavedItemsState extends State<SavedItems> {
               child: CircularProgressIndicator(),
             );
           }
-          // return ListView(
-          //   children: snapshot.data!.docs.map((document) {
-          //     return Container(
-          //       child: Center(child: Text(document['title'])),
-          //     );
-          //   }).toList(),
-          // );
           return ListView.builder(
             itemCount: snapshot.data!.size,
             shrinkWrap: true,
             physics: const AlwaysScrollableScrollPhysics(),
             itemBuilder: (context, index) {
+              DocumentSnapshot document = snapshot.data!.docs[index];
               return Card(
+                elevation: 10,
                 child: ListTile(
                   trailing: Tooltip(
                       message: 'Save News',
                       child: InkWell(
                         onTap: () async{
-                          Future.delayed(const Duration(seconds: 1),()=> const Center(child: CircularProgressIndicator()));
                           await FirebaseFirestore.instance.runTransaction((Transaction myTransaction) async {
                              myTransaction.delete(snapshot.data!.docs[index].reference);
                           });
+                          showToast("Deleted......",context:context);
                         },
                         child: const Icon(
                           Icons.delete,
                           color: Colors.indigo,
                         ),
                       )),
-                  title: Text(snapshot.data!.docs.map((e) => e['title']).toString()),
+                  title: Text( document['title'],maxLines: 3,overflow: TextOverflow.ellipsis,),
                 ),
               );
             },

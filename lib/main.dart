@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:newsapp/favourite.dart';
+import 'package:newsapp/top_headlines.dart';
 import 'package:newsapp/firebase_options.dart';
-import 'package:newsapp/home.dart';
+import 'package:newsapp/latest.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'saved.dart';
 
@@ -19,6 +19,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'News App',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
@@ -67,9 +68,9 @@ class _MyHomePageState extends State<MyHomePage> {
           });
         },
         items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Latest'),
           BottomNavigationBarItem(
-              icon: Icon(Icons.favorite), label: 'Favourite'),
+              icon: Icon(Icons.newspaper), label: 'Top'),
           BottomNavigationBarItem(icon: Icon(Icons.save), label: 'saved'),
         ],
       ),
