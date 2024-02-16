@@ -56,65 +56,32 @@ class _NewsPageState extends State<NewsPage> {
             )
           : Column(
               children: [
-                TextField(
-                  controller: controller,
-                  style: const TextStyle(),
-                  decoration: const InputDecoration(hintText: 'search here..'),
-                  onChanged: _onTextChanged,
+                Container(
+                  margin: const EdgeInsets.only(left: 12,right: 12,top: 8,bottom: 6.0),
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.grey),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+
+                  padding: const EdgeInsets.only(left: 8.0,right: 8),
+                  child: TextField(
+                    controller: controller,
+                    style: const TextStyle(),
+                    decoration:  const InputDecoration(hintText: 'search here..',
+                      border: InputBorder.none,
+                    ),
+                    onChanged: _onTextChanged,
+                  ),
                 ),
                 Expanded(
                   child: ListView.builder(
+                    cacheExtent: 1000,
                     itemCount: controller.text.isEmpty
                         ? newsList.length
                         : searchedNewsList.length,
                     itemBuilder: (context, index) {
-                      
-                      return NewsItem(title: newsList[index]['title'] ?? '', subtitle:newsList[index]['description'] ?? '' , imageUrl: newsList[index]['urlToImage'] ?? 'https://github.githubassets.com/assets/GitHub-Mark-ea2971cee799.png');
-                      // return Card(
-                      //   child: ListTile(
-                      //     trailing: Column(
-                      //       children: [
-                      //         Tooltip(
-                      //             message: 'Add To Favourite',
-                      //             child: InkWell(
-                      //               onTap: () {
-                      //                 showToast(
-                      //                   'Added to favourite',
-                      //                   context: context,
-                      //                   animation: StyledToastAnimation.scale,
-                      //                 );
-                      //                 addToFavourite(newsList[index]['title']);
-                      //               },
-                      //               child: const Icon(
-                      //                 Icons.favorite,
-                      //                 color: Colors.red,
-                      //               ),
-                      //             )),
-                      //         //       SizedBox(height: 5),
-                      //         Tooltip(
-                      //             message: 'Save News',
-                      //             child: InkWell(
-                      //               onTap: () {
-                      //                 addItemToFireStore(
-                      //                     newsList[index]['title']);
-                      //                 showToast(
-                      //                   'News Saved',
-                      //                   context: context,
-                      //                   animation: StyledToastAnimation.scale,
-                      //                 );
-                      //               },
-                      //               child: const Icon(
-                      //                 Icons.save_alt_sharp,
-                      //                 color: Colors.indigo,
-                      //               ),
-                      //             )),
-                      //       ],
-                      //     ),
-                      //     title: Text(controller.text.isEmpty
-                      //         ? newsList[index]['title']
-                      //         : searchedNewsList[index]['title']),
-                      //   ),
-                      // );
+                      final item = searchedNewsList.isNotEmpty ? searchedNewsList[index] : newsList[index];
+                      return NewsItem(title: item['title'] ?? '', subtitle:item['description'] ?? '' , imageUrl: item['urlToImage'] ?? 'https://github.githubassets.com/assets/GitHub-Mark-ea2971cee799.png');
                     },
                   ),
                 ),
@@ -130,34 +97,10 @@ class _NewsPageState extends State<NewsPage> {
           .toList();
       setState(() {});
     }
+
   }
 
-// void _onTextChanged(String value) {
-//
-//   if (controller.text.isNotEmpty) {
-//       searchedNewsList.add(value);
-//
-//   }
-//   setState(() {
-//   });
-//  // controller.clear();
-//
-// }
 }
-
-// Future<void> uploadItemToFirestore(String title) async {
-//   try {
-//     FirebaseFirestore firestore = FirebaseFirestore.instance;
-//     CollectionReference collectionReference = firestore.collection('news');
-//     await collectionReference.add({
-//       'title': title,
-//     });
-//
-//     print('News item posted to Firestore successfully!');
-//   } catch (e) {
-//     print('Error posting news item to Firestore: $e');
-//   }
-// }
 
 Future addItemToFireStore(value) async {
   await FirebaseFirestore.instance.collection('items').add({'title': value});
@@ -221,6 +164,8 @@ class NewsItem extends StatelessWidget {
                 IconButton(
                   icon: Icon(Icons.save),
                   onPressed: () {
+                   // Show
+                    addItemToFireStore(title);
                     // Implement save functionality here
                     // You can add your logic to save the image
                   },
